@@ -1,6 +1,7 @@
 import spidev
 import RPi.GPIO as GPIO
 import time
+import sys
 
 # GPIO pins for LCD
 RST_PIN = 11  # Reset
@@ -164,11 +165,17 @@ def lcd_print(text):
     for char in text:
         lcd_data(FONT[char])
 
-# Main program
+def main():
+  lcd_init()
+  lcd_set_cursor(0, 0)
+  if len(sys.argv) > 1:
+      user_input = sys.argv[1]
+      lcd_print(user_input)
+  else:
+      print("Please provide text to display as the first argument.")
+  time.sleep(5)
+  GPIO.cleanup()
+  spi.close()
 
-lcd_init()
-lcd_set_cursor(0, 0)
-lcd_print("Hello!")
-time.sleep(5)
-GPIO.cleanup()
-spi.close()
+if "__main__" == __name__:
+    main()
