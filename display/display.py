@@ -12,9 +12,7 @@ COLUMNS = 14
 PIXELS_PER_ROW = 6
 
 # SPI Configuration
-spi = spidev.SpiDev()
-spi.open(0, 0)  # SPI bus 0, chip select 0
-spi.max_speed_hz = 4000000
+
 
 # LCD Commands
 LCD_COMMAND = 0
@@ -166,16 +164,19 @@ def lcd_print(text):
         lcd_data(FONT[char])
 
 def main():
-  lcd_init()
-  lcd_set_cursor(0, 0)
+  spi = spidev.SpiDev()
+    GPIO.cleanup()
+    spi.close()
+    if not spi.is_open:
+        spi.open(0, 0)  # SPI bus 0, chip select 0
+        spi.max_speed_hz = 4000000
+        lcd_init()
+    lcd_set_cursor(0, 0)
   if len(sys.argv) > 1:
       user_input = sys.argv[1]
       lcd_print(user_input)
   else:
       print("Please provide text to display as the first argument.")
-  time.sleep(5)
-  GPIO.cleanup()
-  spi.close()
 
 if "__main__" == __name__:
     main()
