@@ -164,9 +164,8 @@ def lcd_print(text):
         lcd_data(FONT[char])
 
 def main():
-  spi = spidev.SpiDev()
+    spi = spidev.SpiDev()
     GPIO.cleanup()
-    spi.close()
     if not spi.is_open:
         spi.open(0, 0)  # SPI bus 0, chip select 0
         spi.max_speed_hz = 4000000
