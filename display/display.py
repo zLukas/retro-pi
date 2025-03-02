@@ -2,6 +2,11 @@ import spidev
 import RPi.GPIO as GPIO
 import time
 import sys
+import os
+
+
+#cache 
+CACHE_FILE='lines.txt'
 
 # GPIO pins for LCD
 RST_PIN = 11  # Reset
@@ -133,10 +138,9 @@ def lcd_reset():
 
 
 def update_lines(line: str) -> list:
-    file_path = 'lines.txt'
     lines = []
     try:
-        with open(file_path, 'r') as file:
+        with open(CACHE_FILE, 'r') as file:
             lines = file.readlines()
     except FileNotFoundError:
         pass
@@ -146,7 +150,7 @@ def update_lines(line: str) -> list:
     else:
         lines = [line + '\n']
 
-    with open(file_path, 'w') as file:
+    with open(CACHE_FILE, 'w') as file:
         file.writelines(lines)
 
     return [line.strip() for line in lines]
@@ -177,6 +181,8 @@ def lcd_init():
 
 def lcd_clear():
     white_board = [0] * (ROWS * COLUMNS * PIXELS_PER_ROW)
+    if os.path.exists(CACHE_FILE):
+        os.remove(CACHE_FILE)
     lcd_data(white_board)
 
 def lcd_set_cursor(x, y):
