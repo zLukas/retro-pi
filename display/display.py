@@ -193,7 +193,11 @@ def main():
   lcd_set_cursor(0, 0)
   if len(sys.argv) > 1:
       user_input = sys.argv[1]
-      lcd_print(update_lines(user_input))
+      if user_input == "--clear":
+        lcd_clear()
+      else:
+        lcd_print(update_lines(user_input))
+        
   else:
       print("Please provide text to display as the first argument.")
 
