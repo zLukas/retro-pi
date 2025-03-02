@@ -132,12 +132,24 @@ spi.max_speed_hz=4000000
 
 # Helper functions
 def lcd_reset():
+    """
+    Reset the LCD display by toggling the reset pin.
+    """
     GPIO.output(RST_PIN, GPIO.LOW)
     time.sleep(0.1)
     GPIO.output(RST_PIN, GPIO.HIGH)
 
 
 def update_lines(line: str) -> list:
+    """
+    Update the cache file with the new line and return the updated list of lines.
+
+    Args:
+        line (str): The new line to add to the cache.
+
+    Returns:
+        list: The updated list of lines.
+    """
     lines = []
     try:
         with open(CACHE_FILE, 'r') as file:
@@ -155,20 +167,42 @@ def update_lines(line: str) -> list:
 
     return [line.strip() for line in lines]
 
-def lcd_write(byte, mode):
+def lcd_write(byte, mode) -> None:
+    """
+    Write a byte or list of bytes to the LCD display.
+
+    Args:
+        byte (int or list): The byte or list of bytes to write.
+        mode (int): The mode to write in (LCD_COMMAND or LCD_DATA).
+    """
     GPIO.output(DC_PIN, GPIO.HIGH if mode == LCD_DATA else GPIO.LOW)
     if type(byte) is list:
       spi.writebytes(byte)
     else:
       spi.writebytes([byte])
 
-def lcd_command(command):
+def lcd_command(command) -> None:
+    """
+    Send a command to the LCD display.
+
+    Args:
+        command (int or list): The command to send.
+    """
     lcd_write(command, LCD_COMMAND)
 
-def lcd_data(data):
+def lcd_data(data) -> None:
+    """
+    Send data to the LCD display.
+
+    Args:
+        data (int or list): The data to send.
+    """
     lcd_write(data, LCD_DATA)
 
-def lcd_init():
+def lcd_init()->None:
+    """
+    Initialize the LCD display.
+    """
     lcd_reset()
     lcd_command(CONTRAST)
     lcd_command(0x21)  # Extended instruction set
@@ -179,33 +213,49 @@ def lcd_init():
     lcd_command(0x0C)  # Display control: normal mode
     lcd_clear()
 
-def lcd_clear():
+def lcd_clear()-> None:
+    """
+    Clear the LCD display.
+    """
     white_board = [0] * (ROWS * COLUMNS * PIXELS_PER_ROW)
     lcd_data(white_board)
 
-def lcd_set_cursor(x, y):
+def lcd_set_cursor(x, y)-> None:
+    """
+    Set the cursor position on the LCD display.
+
+    Args:
+        x (int): The x-coordinate of the cursor.
+        y (int): The y-coordinate of the cursor.
+    """
     lcd_command([x+128, y+64])
 
-def lcd_print(lines: list):
+def lcd_print(lines: list)-> None:
+    """
+    Print lines (new line new row) of text to the LCD display.
+
+    Args:
+        lines (list): The lines of text to print.
+    """
     for row,line in enumerate(lines):
       lcd_set_cursor(0, row)       
       for char in line:
          lcd_data(FONT[char])
 
 def main():
-  lcd_init()
-  lcd_set_cursor(0, 0)
-  if len(sys.argv) > 1:
-      user_input = sys.argv[1]
-      if user_input == "--clear":
-        lcd_clear()
-        if os.path.exists(CACHE_FILE):
-            os.remove(CACHE_FILE)
-      else:
-        lcd_print(update_lines(user_input))
+    lcd_init()
+    lcd_set_cursor(0, 0)
+    if len(sys.argv) > 1:
+        user_input = sys.argv[1]
+        if user_input == "--clear":
+            lcd_clear()
+            if os.path.exists(CACHE_FILE):
+                os.remove(CACHE_FILE)
+        else:
+            lcd_print(update_lines(user_input))
         
-  else:
-      print("Please provide text to display as the first argument.")
+    else:
+        print("Please provide text to display as the first argument.")
 
 if "__main__" == __name__:
     main()
