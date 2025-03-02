@@ -6,7 +6,7 @@ import os
 
 
 #cache 
-CACHE_FILE='lines.txt'
+CACHE_FILE='/tmp/lines.txt'
 
 # GPIO pins for LCD
 RST_PIN = 11  # Reset
@@ -181,8 +181,6 @@ def lcd_init():
 
 def lcd_clear():
     white_board = [0] * (ROWS * COLUMNS * PIXELS_PER_ROW)
-    if os.path.exists(CACHE_FILE):
-        os.remove(CACHE_FILE)
     lcd_data(white_board)
 
 def lcd_set_cursor(x, y):
@@ -201,6 +199,8 @@ def main():
       user_input = sys.argv[1]
       if user_input == "--clear":
         lcd_clear()
+        if os.path.exists(CACHE_FILE):
+            os.remove(CACHE_FILE)
       else:
         lcd_print(update_lines(user_input))
         
