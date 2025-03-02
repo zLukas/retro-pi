@@ -141,7 +141,7 @@ def update_lines(line: str) -> list:
     except FileNotFoundError:
         pass
 
-    if len(lines) <= ROWS:
+    if len(lines) < ROWS:
         lines.append(line + '\n')
     else:
         lines = [line + '\n']
@@ -183,16 +183,17 @@ def lcd_set_cursor(x, y):
     lcd_command([x+128, y+64])
 
 def lcd_print(lines: list):
-    for line in lines:
-        for char in line:
-            lcd_data(FONT[char])
+    for row,line in enumerate(lines):
+      lcd_set_cursor(0, row)       
+      for char in line:
+         lcd_data(FONT[char])
 
 def main():
   lcd_init()
   lcd_set_cursor(0, 0)
   if len(sys.argv) > 1:
       user_input = sys.argv[1]
-      lcd_print(user_input)
+      lcd_print(update_lines(user_input))
   else:
       print("Please provide text to display as the first argument.")
 
