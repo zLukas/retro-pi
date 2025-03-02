@@ -11,9 +11,6 @@ ROWS = 6
 COLUMNS = 14
 PIXELS_PER_ROW = 6
 
-# SPI Configuration
-
-
 # LCD Commands
 LCD_COMMAND = 0
 LCD_DATA = 1
@@ -117,16 +114,42 @@ FONT = {
   '}': [0x00, 0x41, 0x36, 0x08, 0x00],
   '~': [0x10, 0x08, 0x08, 0x10, 0x08],
   '\x7f': [0x00, 0x7e, 0x42, 0x42, 0x7e],
-}# GPIO Setup
+}
+SPI_BUS=0
+SPI_CS=0
+GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(RST_PIN, GPIO.OUT)
 GPIO.setup(DC_PIN, GPIO.OUT)
+spi=spidev.SpiDev()
+spi.open(SPI_BUS,SPI_CS)
+spi.max_speed_hz=4000000
 
 # Helper functions
 def lcd_reset():
     GPIO.output(RST_PIN, GPIO.LOW)
     time.sleep(0.1)
     GPIO.output(RST_PIN, GPIO.HIGH)
+
+
+def update_lines(line: str) -> list:
+    file_path = 'lines.txt'
+    lines = []
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        pass
+
+    if len(lines) <= ROWS:
+        lines.append(line + '\n')
+    else:
+        lines = [line + '\n']
+
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+
+    return [line.strip() for line in lines]
 
 def lcd_write(byte, mode):
     GPIO.output(DC_PIN, GPIO.HIGH if mode == LCD_DATA else GPIO.LOW)
@@ -159,18 +182,14 @@ def lcd_clear():
 def lcd_set_cursor(x, y):
     lcd_command([x+128, y+64])
 
-def lcd_print(text):
-    for char in text:
-        lcd_data(FONT[char])
+def lcd_print(lines: list):
+    for line in lines:
+        for char in line:
+            lcd_data(FONT[char])
 
 def main():
-    spi = spidev.SpiDev()
-    GPIO.cleanup()
-    if not spi.is_open:
-        spi.open(0, 0)  # SPI bus 0, chip select 0
-        spi.max_speed_hz = 4000000
-        lcd_init()
-    lcd_set_cursor(0, 0)
+  lcd_init()
+  lcd_set_cursor(0, 0)
   if len(sys.argv) > 1:
       user_input = sys.argv[1]
       lcd_print(user_input)

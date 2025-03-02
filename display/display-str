@@ -1,8 +1,13 @@
 #!/bin/bash
+PWD==$(pwd) 
 SCRIPT_DIR=$(cd $(dirname "$0") && pwd)
+cd ${SCRIPT_DIR}
+
 if [ -z ${1} ]; then
     echo "Usage: display-str <string>"
-    exit 1
+    EXIT_CODE=1
 fi
-
 python3 ${SCRIPT_DIR}/display.py ${1}
+EXIT_CODE=$?
+cd ${PWD}
+exit ${EXIT_CODE}
