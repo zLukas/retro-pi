@@ -1,36 +1,66 @@
-# Retro Pi Display
+# Display
 
-This project contains scripts to display text on an LCD connected to a Raspberry Pi.
+The `display` folder contains scripts and files necessary for setting up and controlling the LCD display for the retro-pi project.
 
-## Scripts
+## Contents
 
-### `install.sh`
-
-This script installs the necessary files to `/usr/bin` and sets the appropriate permissions.
-
-### `display.py`
-
-This Python script handles the communication with the LCD. It can display text provided as a command-line argument.
-
-### `display-str`
-
-This Bash script is a wrapper for `display.py`. It simplifies the process of displaying text on the LCD.
+- **display.py**: The main Python script for controlling the LCD display. It includes functions for initializing the display, clearing it, setting the cursor position, and printing text.
+- **display-str**: A shell script that provides a convenient way to display a string on the LCD by calling `display.py`.
+- **install.sh**: A shell script to install the display scripts by copying them to `/usr/bin` and making them executable.
 
 ## Usage
 
-1. **Install the scripts:**
-    ```bash
-    sudo ./install.sh
-    ```
+### display.py
 
-2. **Display text on the LCD:**
-    ```bash
-    display-str "Your text here"
-    ```
+This script is used to interact with the LCD display. It can be run with a string argument to display text on the LCD.
 
-3. **Clear the LCD display:**
-    ```bash
-    display-str --clear
-    ```
+```sh
+python3 display.py "Your text here"
+```
 
-nokia 5510 display was used so only 6 rows can be displayed at the time. the command append new to the display. when all 6 rows are filled with text, the screen clears itslefl and write a new line.
+To clear the display, use the `--clear` argument:
+
+```sh
+python3 display.py --clear
+```
+
+### display-str
+
+This script provides a simpler way to display text on the LCD. It takes a single argument, which is the text to display.
+
+```sh
+./display-str "Your text here"
+```
+
+### install.sh
+
+Run this script to install the display scripts to `/usr/bin`.
+
+```sh
+./install.sh
+```
+
+This will copy `display-str` and `display.py` to `/usr/bin` and make them executable.
+
+## Dependencies
+
+- `spidev`
+- `RPi.GPIO`
+- `pillow`
+
+These can be installed using pip:
+
+```sh
+pip3 install spidev RPi.GPIO pillow
+```
+
+## Wiring
+
+Ensure that the LCD display is wired correctly to the Raspberry Pi as per the wiring diagram provided in the `hardware` folder.
+
+- **RST_PIN**: GPIO 11
+- **DC_PIN**: GPIO 13
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for more details.
