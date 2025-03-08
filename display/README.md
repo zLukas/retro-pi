@@ -44,23 +44,14 @@ This will copy `display-str` and `display.py` to `/usr/bin` and make them execut
 
 ## Dependencies
 
-- `spidev`
-- `RPi.GPIO`
-- `pillow`
-
-These can be installed using pip:
-
 ```sh
 pip3 install spidev RPi.GPIO pillow
 ```
 
 ## Wiring
 
-Ensure that the LCD display is wired correctly to the Raspberry Pi as per the wiring diagram provided in the `hardware` folder.
+Ensure that the LCD display is wired correctly to the Raspberry Pi.
+See wiring diagram in the `hardware` folder for reference.
 
-- **RST_PIN**: GPIO 11
-- **DC_PIN**: GPIO 13
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for more details.
+![lcd](../img/IMG_1800.jpg)
+![lcd](../img/IMG_1799.jpg)
