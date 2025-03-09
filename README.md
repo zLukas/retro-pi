@@ -1,6 +1,5 @@
-# retro-pi
-Raspberry pi zero retro setup that mimics old fashion retro computers, 
-Project aims to create a retro-style computer using a Raspberry Pi Zero. The setup includes custom hardware components, such as a 3D-printed case and 3 party components like LCD display. 
+# Retro-Pi
+Project aims to create a retro-style computer using a Raspberry Pi Zero. The setup includes custom hardware components, such as a 3D-printed case and 3rd party components like LCD display. 
 
 
 <p align="center">
